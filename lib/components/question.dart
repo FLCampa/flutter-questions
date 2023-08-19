@@ -9,10 +9,10 @@ class Question extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.all(20),
+      margin: const EdgeInsets.fromLTRB(20, 0, 20, 40),
       child: Text(
         text,
-        style: TextStyle(fontSize: 28),
+        style: const TextStyle(fontSize: 28),
         textAlign: TextAlign.center,
       ),
     );

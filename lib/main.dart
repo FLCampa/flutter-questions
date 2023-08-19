@@ -1,53 +1,56 @@
 import 'package:flutter/material.dart';
-import './question.dart';
-import 'answer.dart';
+import 'components/quiz.dart';
+import 'components/result.dart';
+import '../utils/questions.dart';
 
-void main() => runApp(QuestionApp());
+void main() => runApp(const QuestionApp());
 
-class _QuestionAppState extends State<QuestionApp> {
+class QuestionApp extends StatefulWidget {
+  const QuestionApp({super.key});
+
+  @override
+  QuestionAppState createState() => QuestionAppState();
+}
+
+class QuestionAppState extends State<QuestionApp> {
   var _selectedQuestionIndex = 0;
+  var _totalScore = 0;
 
-  void _answer() {
-    setState(() {
-      _selectedQuestionIndex++;
-    });
-
-    // ignore: avoid_print
-    print(_selectedQuestionIndex);
+  void _answer(int score) {
+    if (isValidIndex) {
+      setState(() {
+        _selectedQuestionIndex++;
+        _totalScore += score;
+      });
+    }
   }
 
-  //metodo build depende do estado
+  void _restartQuiz() {
+    setState(() {
+      _selectedQuestionIndex = 0;
+      _totalScore = 0;
+    });
+  }
+
+  bool get isValidIndex {
+    return _selectedQuestionIndex < questions.length;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final List<String> questions = [
-      "What's your favorite color?",
-      "What's your favorite animal?",
-    ];
-
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Flutter Questions'),
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Question(questions[_selectedQuestionIndex]),
-            Answer('Answer 1', _answer),
-            Answer('Answer 2', _answer),
-            Answer('Answer 3', _answer),
-          ],
-        ),
+        body: isValidIndex
+            ? Quiz(
+                questions: questions,
+                selectedQuestionIndex: _selectedQuestionIndex,
+                onAnswer: _answer,
+              )
+            : Result(_totalScore, _restartQuiz),
       ),
     );
-  }
-}
-
-class QuestionApp extends StatefulWidget {
-  QuestionApp({super.key});
-
-  @override
-  _QuestionAppState createState() {
-    return _QuestionAppState();
   }
 }
